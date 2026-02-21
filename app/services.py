@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 
 User = get_user_model()
 
@@ -26,10 +27,16 @@ class UserService:
             ) from exc
 
     @staticmethod
-    def create(username: str, password: str) -> User:
+    def create(username: str, password: str, **fields) -> User:
+        try:
+            validate_password(password)
+        except ValidationError as exc:
+            raise exc
+
         user = User.objects.create_user(
             username=username,
             password=password,
+            **fields,
         )
         return user
 
@@ -39,6 +46,8 @@ class UserService:
             user = User.objects.get(pk=user_id)
         except User.DoesNotExist as exc:
             raise ObjectDoesNotExist(f"User with id {user_id} does not exist.") from exc
+
+        fields.pop("password", None)
 
         for attr, value in fields.items():
             setattr(user, attr, value)

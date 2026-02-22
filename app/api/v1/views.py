@@ -53,3 +53,10 @@ class LoginView(APIView):
             max_age=access_token.lifetime,
         )
         return response
+
+
+class LogoutView(APIView):
+    def post(self, request):
+        response = Response(status=status.HTTP_200_OK)
+        response.delete_cookie("access_token")
+        return response

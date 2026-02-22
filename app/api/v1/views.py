@@ -1,4 +1,4 @@
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -37,7 +37,11 @@ class UserView(APIView):
 
 class LoginView(APIView):
     def post(self, request):
-        user = UserService.get_by_username(request.data["username"])
+        try:
+            user = UserService.get_by_username(request.data["username"])
+        except ObjectDoesNotExist as exc:
+            return Response({"username": exc.args}, status.HTTP_404_NOT_FOUND)
+
         if not user.check_password(request.data["password"]):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 

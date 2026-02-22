@@ -1,7 +1,10 @@
+from datetime import datetime
+
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from app.services import UserService
@@ -45,7 +48,8 @@ class LoginView(APIView):
         if not user.check_password(request.data["password"]):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-        access_token = RefreshToken.for_user(user).access_token
+        refresh_token = RefreshToken.for_user(user)
+        access_token = refresh_token.access_token
 
         serializer = UserSerializer(user)
         response = Response(serializer.data, status=status.HTTP_200_OK)
@@ -54,7 +58,39 @@ class LoginView(APIView):
             value=str(access_token),
             httponly=True,
             samesite="Lax",
-            max_age=access_token.lifetime,
+            expires=datetime.fromtimestamp(access_token.payload["exp"]),
+        )
+        response.set_cookie(
+            key="refresh_token",
+            value=str(refresh_token),
+            httponly=True,
+            samesite="Lax",
+            expires=datetime.fromtimestamp(refresh_token.payload["exp"]),
+        )
+        return response
+
+
+class RefreshTokenView(APIView):
+    def post(self, request):
+        if request.COOKIES.get("refresh_token") is None:
+            return Response(
+                {"Refresh token is required"}, status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        try:
+            refresh_token = RefreshToken(request.COOKIES.get("refresh_token"))
+        except TokenError as exc:
+            return Response(exc.args, status=status.HTTP_401_UNAUTHORIZED)
+
+        new_access_token = refresh_token.access_token
+
+        response = Response(status=status.HTTP_200_OK)
+        response.set_cookie(
+            key="access_token",
+            value=str(new_access_token),
+            httponly=True,
+            samesite="Lax",
+            expires=datetime.fromtimestamp(new_access_token.payload["exp"]),
         )
         return response
 
@@ -63,4 +99,5 @@ class LogoutView(APIView):
     def post(self, request):
         response = Response(status=status.HTTP_200_OK)
         response.delete_cookie("access_token")
+        response.delete_cookie("refresh_token")
         return response

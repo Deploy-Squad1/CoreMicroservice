@@ -5,6 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError
 User = get_user_model()
 
 
+# TODO: Move generic methods into base class
 class UserService:
     @staticmethod
     def get_all():
@@ -27,7 +28,7 @@ class UserService:
             ) from exc
 
     @staticmethod
-    def create(username: str, password: str, **fields) -> User:
+    def register(username: str, password: str, **fields) -> User:
         try:
             validate_password(password)
         except ValidationError as exc:

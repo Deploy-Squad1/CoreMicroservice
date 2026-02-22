@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.exceptions import TokenError
@@ -12,19 +13,14 @@ from app.services import UserService
 from .serializers import UserSerializer
 
 
-class UserView(APIView):
-    def get(self, request):
-        users = UserService.get_all()
-        serializer = UserSerializer(users, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
+class RegistrationView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            user = UserService.create(
+            user = UserService.register(
                 serializer.validated_data["username"],
                 serializer.validated_data["password"],
             )
@@ -71,6 +67,8 @@ class LoginView(APIView):
 
 
 class RefreshTokenView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         if request.COOKIES.get("refresh_token") is None:
             return Response(
@@ -96,6 +94,8 @@ class RefreshTokenView(APIView):
 
 
 class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         response = Response(status=status.HTTP_200_OK)
         response.delete_cookie("access_token")

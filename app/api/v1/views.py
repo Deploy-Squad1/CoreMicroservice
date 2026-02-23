@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from app.services import UserService
@@ -70,14 +71,19 @@ class RefreshTokenView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        if request.COOKIES.get("refresh_token") is None:
+        try:
+            refresh_token = RefreshToken(request.COOKIES.get("refresh_token"))
+        except TokenError as exc:
+            return Response(exc.args, status=status.HTTP_401_UNAUTHORIZED)
+
+        if refresh_token is None:
             return Response(
                 {"Refresh token is required"}, status=status.HTTP_401_UNAUTHORIZED
             )
 
         try:
-            refresh_token = RefreshToken(request.COOKIES.get("refresh_token"))
-        except TokenError as exc:
+            UserService.get_by_id(refresh_token.payload.get(api_settings.USER_ID_CLAIM))
+        except ObjectDoesNotExist as exc:
             return Response(exc.args, status=status.HTTP_401_UNAUTHORIZED)
 
         new_access_token = refresh_token.access_token

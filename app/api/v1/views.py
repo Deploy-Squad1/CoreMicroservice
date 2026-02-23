@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.exceptions import TokenError
@@ -69,7 +69,7 @@ class LoginView(APIView):
 
 
 class RefreshTokenView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def post(self, request):
         try:

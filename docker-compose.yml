@@ -1,4 +1,5 @@
 version: "3.9"
+
 services:
   # Database for Core service
   db-core:
@@ -12,7 +13,7 @@ services:
       - core_db_data:/var/lib/postgresql/data
     ports:
       - "5433:5432"
-   restart: always
+    restart: always
   # Core Microservice (Django)
   core-service:
     build: .

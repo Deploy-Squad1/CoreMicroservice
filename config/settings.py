@@ -37,11 +37,13 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.staticfiles",
     "rest_framework",
+    "corsheaders",
     "app",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -132,3 +134,22 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
+
+
+# CORS settings
+# https://github.com/adamchainz/django-cors-headers?tab=readme-ov-file#django-cors-headers
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # For local development
+]
+
+CORS_ALLOW_METHODS = (
+    "GET",
+    "POST",
+)
+
+CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",  # For local development
+]

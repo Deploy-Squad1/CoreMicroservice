@@ -1,0 +1,18 @@
+from rest_framework_simplejwt.authentication import JWTStatelessUserAuthentication
+from rest_framework_simplejwt.exceptions import AuthenticationFailed
+
+
+class CookieJWTAuthentication(JWTStatelessUserAuthentication):
+    def authenticate(self, request):
+        token = request.COOKIES.get("access_token")
+
+        if not token:
+            return None
+
+        try:
+            validated_token = self.get_validated_token(token.encode())
+            user = self.get_user(validated_token)
+        except AuthenticationFailed as exc:
+            raise exc
+
+        return user, validated_token

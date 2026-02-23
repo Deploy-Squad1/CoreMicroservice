@@ -23,6 +23,7 @@ class RegistrationView(APIView):
         try:
             user = UserService.register(
                 serializer.validated_data["username"],
+                serializer.validated_data["email"],
                 serializer.validated_data["password"],
             )
         except ValidationError as exc:

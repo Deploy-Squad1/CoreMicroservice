@@ -28,7 +28,7 @@ class UserService:
             ) from exc
 
     @staticmethod
-    def register(username: str, password: str, **fields) -> User:
+    def register(username: str, email: str, password: str, **fields) -> User:
         try:
             validate_password(password)
         except ValidationError as exc:
@@ -36,6 +36,7 @@ class UserService:
 
         user = User.objects.create_user(
             username=username,
+            email=email,
             password=password,
             **fields,
         )

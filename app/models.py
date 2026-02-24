@@ -11,3 +11,12 @@ class User(AbstractUser):
             "unique": _("A user with that email already exists."),
         },
     )
+
+
+class Passcode(models.Model):
+    """
+    Model that represents a daily updated passcode for accessing
+    the website.
+    """
+
+    passcode = models.CharField(_("password"), max_length=128)

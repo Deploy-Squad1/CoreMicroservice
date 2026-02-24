@@ -46,6 +46,7 @@ class LoginView(APIView):
         if not user.check_password(request.data["password"]):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
+        # TODO: Move JWT token logic to the service
         refresh_token = RefreshToken.for_user(user)
         access_token = refresh_token.access_token
 

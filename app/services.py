@@ -81,7 +81,7 @@ class PasscodeService:
             old_passcode = Passcode()
 
         # Generating new passcode randomly
-        alphabet = string.ascii_letters + string.digits + string.punctuation
+        alphabet = string.ascii_letters + string.digits + "$&%+-*{}()[]"
         new_plain_passcode = "".join(secrets.choice(alphabet) for i in range(25))
 
         old_passcode.passcode = make_password(new_plain_passcode)

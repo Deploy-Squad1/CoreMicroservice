@@ -104,6 +104,11 @@ class RefreshTokenView(APIView):
         return response
 
 
+class HealthCheckView(APIView):
+    def get(self, request):
+        return Response({"status": "ok"}, status=status.HTTP_200_OK)
+
+
 class LogoutView(APIView):
     def post(self, request):
         response = Response(status=status.HTTP_200_OK)

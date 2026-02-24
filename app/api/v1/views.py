@@ -108,3 +108,8 @@ class LogoutView(APIView):
         response.delete_cookie("access_token")
         response.delete_cookie("refresh_token")
         return response
+
+
+class HealthCheckView(APIView):
+    def get(self, request):
+        return Response({"status": "ok"}, status=status.HTTP_200_OK)

@@ -9,7 +9,7 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from app.services import UserService
+from app.services import PasscodeService, UserService
 
 from .serializers import UserSerializer
 
@@ -44,7 +44,10 @@ class LoginView(APIView):
             return Response({"username": exc.args}, status.HTTP_404_NOT_FOUND)
 
         if not user.check_password(request.data["password"]):
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+            return Response(
+                {"password": "Passwords don't match"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
 
         # TODO: Move JWT token logic to the service
         refresh_token = RefreshToken.for_user(user)
@@ -102,10 +105,23 @@ class RefreshTokenView(APIView):
 
 
 class LogoutView(APIView):
-    permission_classes = [IsAuthenticated]
-
     def post(self, request):
         response = Response(status=status.HTTP_200_OK)
         response.delete_cookie("access_token")
         response.delete_cookie("refresh_token")
         return response
+
+
+class VerifyPasscodeView(APIView):
+    def post(self, request):
+        passcode = request.data["passcode"]
+
+        try:
+            if PasscodeService.check_passcode(passcode):
+                return Response(status=status.HTTP_200_OK)
+            return Response(
+                {"passcode": "Passcodes don't match"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+        except ObjectDoesNotExist as exc:
+            return Response(exc.args, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -75,24 +75,28 @@ class UserService:
 
 class PasscodeService:
     @staticmethod
-    def generate_new() -> str:
-        old_passcode = Passcode.objects.first()
-        if old_passcode is None:
-            old_passcode = Passcode()
-
-        # Generating new passcode randomly
+    def generate_plain() -> str:
+        """Generate a new plain passcode without saving it in the database."""
         alphabet = string.ascii_letters + string.digits + "$&%+-*{}()[]"
-        new_plain_passcode = "".join(secrets.choice(alphabet) for i in range(25))
+        plain_passcode = "".join(secrets.choice(alphabet) for i in range(25))
 
-        old_passcode.passcode = make_password(new_plain_passcode)
-        old_passcode.save()
-
-        return new_plain_passcode
+        return plain_passcode
 
     @staticmethod
-    def check_passcode(passcode: str) -> bool:
+    def check(passcode: str) -> bool:
+        """Compare the passcode to the hash in the database."""
         hashed_passcode = Passcode.objects.first()
         if hashed_passcode is None:
             raise ObjectDoesNotExist("Passcode is absent in the database.")
 
         return check_password(passcode, hashed_passcode.passcode)
+
+    @staticmethod
+    def update(plain_passcode: str) -> None:
+        """Hash the passcode and save it in the database."""
+        old_passcode = Passcode.objects.first()
+        if old_passcode is None:
+            old_passcode = Passcode()
+
+        old_passcode.passcode = make_password(plain_passcode)
+        old_passcode.save()

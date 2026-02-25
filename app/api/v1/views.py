@@ -122,7 +122,7 @@ class VerifyPasscodeView(APIView):
         passcode = request.data["passcode"]
 
         try:
-            if PasscodeService.check_passcode(passcode):
+            if PasscodeService.check(passcode):
                 return Response(status=status.HTTP_200_OK)
             return Response(
                 {"passcode": "Passcodes don't match"},

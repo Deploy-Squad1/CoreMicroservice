@@ -154,3 +154,16 @@ CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",  # For local development
 ]
+
+
+# Custom settings
+
+# Authorization groups(roles) for the application.
+# When applying migrations, groups with listed names will be created
+INITIAL_GROUPS = (
+    # The first three groups are required for proper application work
+    "Bronze",
+    "Silver",
+    "Gold",
+    # Create new groups here if needed
+)

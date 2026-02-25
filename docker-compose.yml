@@ -1,19 +1,14 @@
-version: "3.9"
-
 services:
   # Database for Core service
   db-core:
     image: postgres:15-alpine
     container_name: db-core
-    environment:
-      POSTGRES_USER: core_user
-      POSTGRES_PASSWORD: core_pass
-      POSTGRES_DB: core_db
+    env_file:
+      - .env
     volumes:
       - core_db_data:/var/lib/postgresql/data
-    ports:
-      - "5433:5432"
-    restart: always
+    restart: unless-stopped
+
   # Core Microservice (Django)
   core-service:
     build: .
@@ -24,7 +19,7 @@ services:
     volumes:  # only for working in Dev-mode, remove in production
       - .:/app
     ports:
-      - "8000:8000"
+      - "8000:8000"   # exposed only for Dev-mode
     env_file:
       - .env
     depends_on:

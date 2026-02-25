@@ -73,8 +73,6 @@ class LoginView(APIView):
 
 
 class RefreshTokenView(APIView):
-    permission_classes = [IsAuthenticated]
-
     def post(self, request):
         try:
             refresh_token = RefreshToken(request.COOKIES.get("refresh_token"))

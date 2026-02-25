@@ -47,6 +47,7 @@ class LoginView(APIView):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
         refresh_token = RefreshToken.for_user(user)
+        refresh_token["role"] = user.groups.first().name
         access_token = refresh_token.access_token
 
         serializer = UserSerializer(user)

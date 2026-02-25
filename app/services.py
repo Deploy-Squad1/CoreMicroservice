@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 
@@ -40,6 +41,8 @@ class UserService:
             password=password,
             **fields,
         )
+        user.groups.add(Group.objects.get(name="Bronze"))
+
         return user
 
     @staticmethod

@@ -9,7 +9,7 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from app.services import UserService
+from app.services import IPBlocklistService, UserService
 
 from .serializers import UserSerializer
 
@@ -111,3 +111,9 @@ class LogoutView(APIView):
 class HealthCheckView(APIView):
     def get(self, request):
         return Response({"status": "ok"}, status=status.HTTP_200_OK)
+
+
+class AddIPToBlocklistView(APIView):
+    def post(self, request):
+        IPBlocklistService.add_to_blocklist(request.data["ipAddress"])
+        return Response(status=status.HTTP_201_CREATED)

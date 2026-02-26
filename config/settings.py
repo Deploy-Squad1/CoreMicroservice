@@ -159,4 +159,4 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 
-BLOCKED_IP_REDIRECT_URL = "https://github.com/Deploy-Squad1"
+BLOCKED_IP_REDIRECT_URL = "https://github.com/Deploy-Squad1"  # Change before deployment

@@ -114,6 +114,8 @@ class HealthCheckView(APIView):
 
 
 class AddIPToBlocklistView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         try:
             IPBlocklistService.add_to_blocklist(request.data["ipAddress"])

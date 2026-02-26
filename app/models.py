@@ -14,4 +14,11 @@ class User(AbstractUser):
 
 
 class IPBlocklist(models.Model):
-    ip_address = models.CharField(_("ip hash"), max_length=128)
+    ip_address = models.CharField(
+        _("ip hash"),
+        unique=True,
+        max_length=128,
+        error_messages={
+            "unique": _("This IP is already blocked."),
+        },
+    )

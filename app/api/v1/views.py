@@ -115,5 +115,8 @@ class HealthCheckView(APIView):
 
 class AddIPToBlocklistView(APIView):
     def post(self, request):
-        IPBlocklistService.add_to_blocklist(request.data["ipAddress"])
+        try:
+            IPBlocklistService.add_to_blocklist(request.data["ipAddress"])
+        except ValidationError as exc:
+            return Response(exc.message_dict, status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_201_CREATED)

@@ -84,4 +84,8 @@ class IPBlocklistService:
     @staticmethod
     def add_to_blocklist(ip_address: str) -> None:
         ip_hash = IPBlocklist(ip_address=IPBlocklistService.hash(ip_address))
+        try:
+            ip_hash.validate_unique()
+        except ValidationError as exc:
+            raise exc
         ip_hash.save()

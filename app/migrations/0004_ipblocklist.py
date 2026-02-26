@@ -24,7 +24,12 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "ip_address",
-                    models.CharField(max_length=128, verbose_name="ip hash"),
+                    models.CharField(
+                        error_messages={"unique": "This IP is already blocked."},
+                        max_length=128,
+                        unique=True,
+                        verbose_name="ip hash",
+                    ),
                 ),
             ],
         ),

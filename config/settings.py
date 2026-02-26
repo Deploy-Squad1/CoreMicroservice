@@ -158,3 +158,6 @@ CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",  # For local development
 ]
+
+
+EMAIL_SERVICE_BASE_URL = "http://localhost:8081"

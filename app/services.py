@@ -77,7 +77,7 @@ class PasscodeService:
     @staticmethod
     def generate_plain() -> str:
         """Generate a new plain passcode without saving it in the database."""
-        alphabet = string.ascii_letters + string.digits + "$&%+-*{}()[]"
+        alphabet = string.ascii_letters + string.digits + "$&%+-*"
         plain_passcode = "".join(secrets.choice(alphabet) for i in range(25))
 
         return plain_passcode

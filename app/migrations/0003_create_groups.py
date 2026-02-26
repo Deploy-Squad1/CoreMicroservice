@@ -18,7 +18,7 @@ def create_groups(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("app", "0002_passcode"),
+        ("app", "0001_initial"),
     ]
 
     operations = [

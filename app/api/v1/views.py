@@ -82,13 +82,27 @@ class RefreshTokenView(APIView):
             )
 
         try:
-            UserService.get_by_id(refresh_token.payload.get(api_settings.USER_ID_CLAIM))
+            user = UserService.get_by_id(
+                refresh_token.payload.get(api_settings.USER_ID_CLAIM)
+            )
         except ObjectDoesNotExist as exc:
             return Response(exc.args, status=status.HTTP_401_UNAUTHORIZED)
 
+        response = Response(status=status.HTTP_200_OK)
+
+        if refresh_token.payload.get("role") != user.groups.first().name:
+            refresh_token = RefreshToken.for_user(user)
+            refresh_token["role"] = user.groups.first().name
+            response.set_cookie(
+                key="refresh_token",
+                value=str(refresh_token),
+                httponly=True,
+                samesite="Lax",
+                expires=datetime.fromtimestamp(refresh_token.payload["exp"]),
+            )
+
         new_access_token = refresh_token.access_token
 
-        response = Response(status=status.HTTP_200_OK)
         response.set_cookie(
             key="access_token",
             value=str(new_access_token),

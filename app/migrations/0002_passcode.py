@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("passcode", models.CharField(max_length=128, verbose_name="password")),
+                ("passcode", models.CharField(max_length=128, verbose_name="passcode")),
             ],
         ),
     ]

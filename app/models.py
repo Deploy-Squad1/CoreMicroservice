@@ -19,4 +19,4 @@ class Passcode(models.Model):
     the website.
     """
 
-    passcode = models.CharField(_("password"), max_length=128)
+    passcode = models.CharField(_("passcode"), max_length=128)

@@ -1,3 +1,4 @@
+from rest_framework import permissions
 from rest_framework_simplejwt.authentication import JWTStatelessUserAuthentication
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 
@@ -16,3 +17,14 @@ class CookieJWTAuthentication(JWTStatelessUserAuthentication):
             raise exc
 
         return user, validated_token
+
+
+class IsInGroup(permissions.BasePermission):
+    message = "User doesn't have a necessary role."
+
+    def has_permission(self, request, view):
+        return bool(
+            request.user
+            and request.user.is_authenticated
+            and request.auth.payload["role"] in view.required_groups
+        )

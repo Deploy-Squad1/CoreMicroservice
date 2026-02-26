@@ -11,3 +11,7 @@ class User(AbstractUser):
             "unique": _("A user with that email already exists."),
         },
     )
+
+
+class IPBlocklist(models.Model):
+    ip_address = models.CharField(_("ip hash"), max_length=128)

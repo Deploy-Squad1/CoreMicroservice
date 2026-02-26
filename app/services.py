@@ -1,6 +1,12 @@
+import hashlib
+import hmac
+
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
+
+from app.models import IPBlocklist
 
 User = get_user_model()
 
@@ -65,3 +71,17 @@ class UserService:
             raise ObjectDoesNotExist(f"User with id {user_id} does not exist.") from exc
 
         user.delete()
+
+
+class IPBlocklistService:
+    @staticmethod
+    def hash(ip_address: str) -> str:
+        secret_key = settings.SECRET_KEY.encode()
+        ip_address = ip_address.encode()
+
+        return hmac.new(secret_key, ip_address, hashlib.sha256).hexdigest()
+
+    @staticmethod
+    def add_to_blocklist(ip_address: str) -> None:
+        ip_hash = IPBlocklist(ip_address=IPBlocklistService.hash(ip_address))
+        ip_hash.save()

@@ -20,6 +20,22 @@ class CookieJWTAuthentication(JWTStatelessUserAuthentication):
 
 
 class IsInGroup(permissions.BasePermission):
+    """
+    Allows access only if the user is in one of the listed groups.
+
+    For this permission to work, views must have a `required_groups` field
+    implemented that lists the groups that are allowed to access this view.
+
+    Example::
+
+        # Allow users that have either Bronze or Silver role
+        required_groups = ["Bronze", "Silver"]
+
+    Or::
+
+        required_groups = "Bronze"
+    """
+
     message = "User doesn't have a necessary role."
 
     def has_permission(self, request, view):

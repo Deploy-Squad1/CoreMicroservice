@@ -42,5 +42,5 @@ class IsInGroup(permissions.BasePermission):
         return bool(
             request.user
             and request.user.is_authenticated
-            and request.auth.payload["role"] in view.required_groups
+            and request.auth.payload.get("role") in view.required_groups
         )

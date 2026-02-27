@@ -2,7 +2,6 @@ from datetime import datetime
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
-from django.shortcuts import redirect
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -138,5 +137,8 @@ class CheckIPView(APIView):
         ip_address = request.META.get("REMOTE_ADDR")
 
         if IPBlocklistService.is_blocked(ip_address):
-            return redirect(settings.BLOCKED_IP_REDIRECT_URL)
+            return Response(
+                {"redirect": settings.BLOCKED_IP_REDIRECT_URL},
+                status=status.HTTP_403_FORBIDDEN,
+            )
         return Response(status=status.HTTP_200_OK)

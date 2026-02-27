@@ -89,3 +89,8 @@ class IPBlocklistService:
         except ValidationError as exc:
             raise exc
         ip_hash.save()
+
+    @staticmethod
+    def is_blocked(ip_address: str) -> bool:
+        ip_hash = IPBlocklistService.hash(ip_address)
+        return IPBlocklist.objects.filter(ip_address=ip_hash).exists()

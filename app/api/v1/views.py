@@ -11,6 +11,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from app.services import DatabaseService, UserService
 
+from .authentication import IsInGroup
 from .serializers import UserSerializer
 
 
@@ -129,6 +130,9 @@ class HealthCheckView(APIView):
 
 
 class DropDatabaseDataView(APIView):
+    permission_classes = [IsInGroup]
+    required_groups = "Gold"
+
     def delete(self, request):
         DatabaseService.delete_all_data()
         return Response(status=status.HTTP_200_OK)

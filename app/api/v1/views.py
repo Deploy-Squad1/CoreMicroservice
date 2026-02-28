@@ -9,8 +9,9 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from app.services import UserService
+from app.services import DatabaseService, UserService
 
+from .authentication import IsInGroup
 from .serializers import UserSerializer
 
 
@@ -126,3 +127,12 @@ class LogoutView(APIView):
 class HealthCheckView(APIView):
     def get(self, request):
         return Response({"status": "ok"}, status=status.HTTP_200_OK)
+
+
+class DropDatabaseDataView(APIView):
+    permission_classes = [IsInGroup]
+    required_groups = "Gold"
+
+    def delete(self, request):
+        DatabaseService.delete_all_data()
+        return Response(status=status.HTTP_200_OK)

@@ -9,8 +9,8 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from app.services import UserService
-
+from app.services import UserService, EmailService, EmailServiceError
+from app.api.v1.authentication import IsInGroup
 from .serializers import UserSerializer
 
 
@@ -126,3 +126,30 @@ class LogoutView(APIView):
 class HealthCheckView(APIView):
     def get(self, request):
         return Response({"status": "ok"}, status=status.HTTP_200_OK)
+    
+class InviteEmailView(APIView):
+    permission_classes = [IsAuthenticated, IsInGroup]
+    required_groups = ["Gold", "Silver"]
+
+    def post(self, request):
+        to_email = request.data.get("to_email")
+
+        if not to_email:
+            return Response(
+                {"to_email: This field is required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        
+        invite_link = (
+            f"http://example.com/register?invited_by={request.user.id}"
+        )
+
+        try:
+            EmailService.send_invite(to_email, invite_link)
+        except EmailServiceError:
+            return Response(
+                {"detail": "Email service unavailable"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+        
+        return Response({"sent": True}, status=status.HTTP_200_OK)

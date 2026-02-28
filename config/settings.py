@@ -167,3 +167,9 @@ INITIAL_GROUPS = (
     "Gold",
     # Create new groups here if needed
 )
+
+# EmailMicroservice URL
+EMAIL_SERVICE_URL = os.getenv(
+    "EMAIL_SERVICE_URL",
+    "http://email-service:8081"
+)

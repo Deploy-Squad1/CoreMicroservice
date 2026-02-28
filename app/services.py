@@ -1,7 +1,10 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
+
+import requests
 
 User = get_user_model()
 
@@ -68,3 +71,24 @@ class UserService:
             raise ObjectDoesNotExist(f"User with id {user_id} does not exist.") from exc
 
         user.delete()
+
+
+class EmailServiceError(Exception):
+    pass
+
+
+class EmailService:
+    @staticmethod
+    def send_invite(to_email: str, invite_link: str):
+        try:
+            response = requests.post(
+                f"{settings.EMAIL_SERVICE_URL}/send-invite",
+                json={
+                    "to_email": to_email,
+                    "invite_link": invite_link,
+                },
+                timeout=5,
+            )
+            response.raise_for_status()
+        except requests.RequestException as exc:
+            raise EmailServiceError("Email service unavailable") from exc

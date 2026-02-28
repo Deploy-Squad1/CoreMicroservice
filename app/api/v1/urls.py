@@ -6,6 +6,7 @@ from .views import (
     LogoutView,
     RefreshTokenView,
     RegistrationView,
+    InviteEmailView,
 )
 
 urlpatterns = [
@@ -14,4 +15,5 @@ urlpatterns = [
     path("token/refresh/", RefreshTokenView.as_view(), name="token-refresh"),
     path("logout/", LogoutView.as_view(), name="logout"),
     path("health/", HealthCheckView.as_view(), name="health"),
+    path("invite/email/", InviteEmailView.as_view(), name="invite-email")
 ]

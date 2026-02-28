@@ -156,4 +156,17 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 
+# Custom settings
+
+# Authorization groups(roles) for the application.
+# When applying migrations, groups with listed names will be created
+INITIAL_GROUPS = (
+    # The first three groups are required for proper application work
+    "Bronze",
+    "Silver",
+    "Gold",
+    # Create new groups here if needed
+)
+
+# The URL to which blocked users will be redirected.
 BLOCKED_IP_REDIRECT_URL = "https://github.com/Deploy-Squad1"  # Change before deployment

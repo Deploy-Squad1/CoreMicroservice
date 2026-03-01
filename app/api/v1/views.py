@@ -15,16 +15,6 @@ from .serializers import UserSerializer
 
 class RegistrationView(APIView):
     def post(self, request):
-        passcode = request.data["passcode"]
-        try:
-            if not PasscodeService.check(passcode):
-                return Response(
-                    {"passcode": "Passcodes don't match"},
-                    status=status.HTTP_401_UNAUTHORIZED,
-                )
-        except ObjectDoesNotExist as exc:
-            return Response(exc.args, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
         serializer = UserSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -47,7 +37,7 @@ class RegistrationView(APIView):
 
 class LoginView(APIView):
     def post(self, request):
-        passcode = request.data["passcode"]
+        passcode = request.data.get("passcode")
         try:
             if not PasscodeService.check(passcode):
                 return Response(
@@ -136,7 +126,7 @@ class LogoutView(APIView):
 
 class VerifyPasscodeView(APIView):
     def post(self, request):
-        passcode = request.data["passcode"]
+        passcode = request.data.get("passcode")
 
         try:
             if PasscodeService.check(passcode):

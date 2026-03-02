@@ -105,6 +105,7 @@ class RefreshTokenView(APIView):
 
         response = Response(status=status.HTTP_200_OK)
 
+        # TODO: Add Secure parameter to cookies
         if refresh_token.payload.get("role") != user.groups.first().name:
             refresh_token = RefreshToken.for_user(user)
             refresh_token["role"] = user.groups.first().name

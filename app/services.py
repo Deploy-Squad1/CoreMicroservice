@@ -12,8 +12,6 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError
 
 from app.models import IPBlocklist, Passcode
 
-User = get_user_model()
-
 
 # TODO: Move generic methods into base class
 class UserService:

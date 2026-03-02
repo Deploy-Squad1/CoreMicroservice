@@ -22,3 +22,12 @@ class IPBlocklist(models.Model):
             "unique": _("This IP is already blocked."),
         },
     )
+
+
+class Passcode(models.Model):
+    """
+    Model that represents a daily updated passcode for accessing
+    the website.
+    """
+
+    passcode = models.CharField(_("passcode"), max_length=128)

@@ -8,6 +8,7 @@ from .views import (
     LogoutView,
     RefreshTokenView,
     RegistrationView,
+    VerifyPasscodeView,
 )
 
 urlpatterns = [
@@ -18,4 +19,5 @@ urlpatterns = [
     path("health/", HealthCheckView.as_view(), name="health"),
     path("ip/block/", AddIPToBlocklistView.as_view(), name="block-ip"),
     path("ip/check/", CheckIPView.as_view(), name="check-ip"),
+    path("passcode/verify/", VerifyPasscodeView.as_view(), name="check-passcode"),
 ]

@@ -167,3 +167,6 @@ INITIAL_GROUPS = (
     "Gold",
     # Create new groups here if needed
 )
+
+# The URL to which blocked users will be redirected.
+BLOCKED_IP_REDIRECT_URL = "https://github.com/Deploy-Squad1"  # Change before deployment

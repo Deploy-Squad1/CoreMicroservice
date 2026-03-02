@@ -1,3 +1,4 @@
+from rest_framework import permissions
 from rest_framework_simplejwt.authentication import JWTStatelessUserAuthentication
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 
@@ -16,3 +17,30 @@ class CookieJWTAuthentication(JWTStatelessUserAuthentication):
             raise exc
 
         return user, validated_token
+
+
+class IsInGroup(permissions.BasePermission):
+    """
+    Allows access only if the user is in one of the listed groups.
+
+    For this permission to work, views must have a `required_groups` field
+    implemented that lists the groups that are allowed to access this view.
+
+    Example::
+
+        # Allow users that have either Bronze or Silver role
+        required_groups = ["Bronze", "Silver"]
+
+    Or::
+
+        required_groups = "Bronze"
+    """
+
+    message = "User doesn't have a necessary role."
+
+    def has_permission(self, request, view):
+        return bool(
+            request.user
+            and request.user.is_authenticated
+            and request.auth.payload.get("role") in view.required_groups
+        )

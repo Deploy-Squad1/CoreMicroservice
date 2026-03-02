@@ -13,6 +13,17 @@ class User(AbstractUser):
     )
 
 
+class IPBlocklist(models.Model):
+    ip_address = models.CharField(
+        _("ip hash"),
+        unique=True,
+        max_length=128,
+        error_messages={
+            "unique": _("This IP is already blocked."),
+        },
+    )
+
+
 class Passcode(models.Model):
     """
     Model that represents a daily updated passcode for accessing

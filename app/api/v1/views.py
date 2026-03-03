@@ -10,7 +10,7 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from app.services import IPBlocklistService, UserService
+from app.services import IPBlocklistService, PasscodeService, UserService
 
 from .serializers import UserSerializer
 
@@ -39,14 +39,28 @@ class RegistrationView(APIView):
 
 class LoginView(APIView):
     def post(self, request):
+        passcode = request.data.get("passcode")
+        try:
+            if not PasscodeService.check(passcode):
+                return Response(
+                    {"passcode": "Passcodes don't match"},
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
+        except ObjectDoesNotExist as exc:
+            return Response(exc.args, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
         try:
             user = UserService.get_by_username(request.data.get("username"))
         except ObjectDoesNotExist as exc:
             return Response({"username": exc.args}, status.HTTP_404_NOT_FOUND)
 
         if not user.check_password(request.data.get("password")):
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+            return Response(
+                {"password": "Passwords don't match"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
 
+        # TODO: Move JWT token logic to the service
         refresh_token = RefreshToken.for_user(user)
         refresh_token["role"] = user.groups.first().name
         access_token = refresh_token.access_token
@@ -91,6 +105,7 @@ class RefreshTokenView(APIView):
 
         response = Response(status=status.HTTP_200_OK)
 
+        # TODO: Add Secure parameter to cookies
         if refresh_token.payload.get("role") != user.groups.first().name:
             refresh_token = RefreshToken.for_user(user)
             refresh_token["role"] = user.groups.first().name
@@ -115,8 +130,6 @@ class RefreshTokenView(APIView):
 
 
 class LogoutView(APIView):
-    permission_classes = [IsAuthenticated]
-
     def post(self, request):
         response = Response(status=status.HTTP_200_OK)
         response.delete_cookie("access_token")
@@ -157,3 +170,18 @@ class CheckIPView(APIView):
                 status=status.HTTP_403_FORBIDDEN,
             )
         return Response(status=status.HTTP_200_OK)
+
+
+class VerifyPasscodeView(APIView):
+    def post(self, request):
+        passcode = request.data.get("passcode")
+
+        try:
+            if PasscodeService.check(passcode):
+                return Response(status=status.HTTP_200_OK)
+            return Response(
+                {"passcode": "Passcodes don't match"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+        except ObjectDoesNotExist as exc:
+            return Response(exc.args, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

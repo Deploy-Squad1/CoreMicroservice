@@ -13,9 +13,13 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from datetime import timedelta
 from pathlib import Path
+
 from dotenv import load_dotenv
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load environmental variables from .env file
 load_dotenv(BASE_DIR / ".env")
 
 
@@ -168,3 +172,9 @@ INITIAL_GROUPS = (
     "Gold",
     # Create new groups here if needed
 )
+
+# The URL to which blocked users will be redirected.
+BLOCKED_IP_REDIRECT_URL = "https://github.com/Deploy-Squad1"  # Change before deployment
+
+# URL of the Email microservice
+EMAIL_SERVICE_BASE_URL = "http://localhost:8081"

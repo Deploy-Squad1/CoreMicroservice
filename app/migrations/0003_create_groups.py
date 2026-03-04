@@ -15,6 +15,13 @@ def create_groups(apps, schema_editor):
     Group.objects.bulk_create(items_to_create)
 
 
+def delete_groups(apps, schema_editor):
+    Group = apps.get_model("auth", "Group")
+
+    queryset = Group.objects.filter(name__in=settings.INITIAL_GROUPS)
+    queryset.delete()
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -22,5 +29,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(create_groups),
+        migrations.RunPython(create_groups, delete_groups),
     ]

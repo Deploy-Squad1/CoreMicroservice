@@ -10,7 +10,6 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.management import call_command
-from django.db import connection
 
 from app.models import IPBlocklist, Passcode
 
@@ -137,12 +136,8 @@ class PasscodeService:
 class DatabaseService:
     @staticmethod
     def delete_all_data() -> None:
-        # Get names of all tables in the database
-        tables = connection.introspection.table_names()
+        # Revert migrations
+        call_command("migrate", "auth", "zero")
 
-        with connection.cursor() as cursor:
-            for table in tables:
-                cursor.execute(f"DROP TABLE {table} CASCADE;")
-
-        # Restore database using migrations
+        # Reapply migrations
         call_command("migrate")

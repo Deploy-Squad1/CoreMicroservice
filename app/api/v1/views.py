@@ -1,5 +1,6 @@
 from datetime import datetime
 
+import requests
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from rest_framework import status
@@ -199,4 +200,9 @@ class DropDatabaseDataView(APIView):
 
     def delete(self, request):
         DatabaseService.delete_all_data()
+
+        requests.delete(
+            settings.MAP_SERVICE_BASE_URL + "/api/internal/database/delete",
+            timeout=600,
+        )
         return Response(status=status.HTTP_200_OK)

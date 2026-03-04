@@ -178,3 +178,6 @@ BLOCKED_IP_REDIRECT_URL = "https://github.com/Deploy-Squad1"  # Change before de
 
 # URL of the Email microservice
 EMAIL_SERVICE_BASE_URL = "http://localhost:8081"
+
+# URL of the Map microservice
+MAP_SERVICE_BASE_URL = "http://localhost:8080"

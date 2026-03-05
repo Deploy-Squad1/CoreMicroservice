@@ -3,6 +3,7 @@ from datetime import datetime
 import requests
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from requests import RequestException
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -199,10 +200,15 @@ class DropDatabaseDataView(APIView):
     required_groups = "Gold"
 
     def delete(self, request):
+        response = Response(status=status.HTTP_200_OK)
         DatabaseService.delete_all_data()
 
-        requests.delete(
-            settings.MAP_SERVICE_BASE_URL + "/api/internal/database/delete",
-            timeout=600,
-        )
-        return Response(status=status.HTTP_200_OK)
+        try:
+            requests.delete(
+                settings.MAP_SERVICE_BASE_URL + "/api/internal/database/delete",
+                timeout=600,
+            )
+        except RequestException:
+            response = Response(status=status.HTTP_206_PARTIAL_CONTENT)
+
+        return response

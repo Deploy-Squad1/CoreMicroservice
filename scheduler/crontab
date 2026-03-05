@@ -1,0 +1,2 @@
+0 7 * * * cd /app && /usr/local/bin/python manage.py rotate_passcode >> /proc/1/fd/1 2>&1
+#0 8 * * * cd /app && /usr/local/bin/python manage.py initialize_voting >> /proc/1/fd/1 2>&1

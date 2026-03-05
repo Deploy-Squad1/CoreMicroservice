@@ -31,7 +31,21 @@ services:
       timeout: 10s
       retries: 3
       start_period: 10s
+
+  # Scheduler service
+  scheduler:
+    build:
+      context: .
+      dockerfile: scheduler/Dockerfile
+    container_name: core-scheduler
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - db-core
+      - core-service
+    restart: unless-stopped
       
 volumes:
   core_db_data:
-

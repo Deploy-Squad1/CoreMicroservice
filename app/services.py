@@ -1,5 +1,6 @@
 import hashlib
 import hmac
+import random
 import secrets
 import string
 
@@ -16,36 +17,36 @@ from app.models import IPBlocklist, Passcode
 
 # TODO: Move generic methods into base class
 class UserService:
-    User = get_user_model()
+    _User = get_user_model()
 
     @staticmethod
     def get_all():
-        return UserService.User.objects.all()
+        return UserService._User.objects.all()
 
     @staticmethod
-    def get_by_id(user_id: int) -> User:
+    def get_by_id(user_id: int) -> _User:
         try:
-            return UserService.User.objects.get(pk=user_id)
-        except UserService.User.DoesNotExist as exc:
+            return UserService._User.objects.get(pk=user_id)
+        except UserService._User.DoesNotExist as exc:
             raise ObjectDoesNotExist(f"User with id {user_id} does not exist.") from exc
 
     @staticmethod
-    def get_by_username(username: str) -> User:
+    def get_by_username(username: str) -> _User:
         try:
-            return UserService.User.objects.get(username=username)
-        except UserService.User.DoesNotExist as exc:
+            return UserService._User.objects.get(username=username)
+        except UserService._User.DoesNotExist as exc:
             raise ObjectDoesNotExist(
                 f"User with username '{username}' does not exist."
             ) from exc
 
     @staticmethod
-    def register(username: str, email: str, password: str, **fields) -> User:
+    def register(username: str, email: str, password: str, **fields) -> _User:
         try:
             validate_password(password)
         except ValidationError as exc:
             raise exc
 
-        user = UserService.User.objects.create_user(
+        user = UserService._User.objects.create_user(
             username=username,
             email=email,
             password=password,
@@ -56,10 +57,10 @@ class UserService:
         return user
 
     @staticmethod
-    def update(user_id: int, **fields) -> User:
+    def update(user_id: int, **fields) -> _User:
         try:
-            user = UserService.User.objects.get(pk=user_id)
-        except UserService.User.DoesNotExist as exc:
+            user = UserService._User.objects.get(pk=user_id)
+        except UserService._User.DoesNotExist as exc:
             raise ObjectDoesNotExist(f"User with id {user_id} does not exist.") from exc
 
         fields.pop("password", None)
@@ -73,11 +74,29 @@ class UserService:
     @staticmethod
     def delete(user_id: int) -> None:
         try:
-            user = UserService.User.objects.get(pk=user_id)
-        except UserService.User.DoesNotExist as exc:
+            user = UserService._User.objects.get(pk=user_id)
+        except UserService._User.DoesNotExist as exc:
             raise ObjectDoesNotExist(f"User with id {user_id} does not exist.") from exc
 
         user.delete()
+
+    @staticmethod
+    def assign_new_inquisitor() -> None:
+        queryset = UserService._User.objects.exclude(is_inquisitor=True)
+        user_count = queryset.count()
+
+        if user_count > 0:
+            random_index = random.randrange(user_count)
+        else:
+            raise ObjectDoesNotExist(
+                "No eligible users for becoming a new inquisitor found."
+            )
+
+        UserService._User.objects.filter(is_inquisitor=True).update(is_inquisitor=False)
+
+        new_inquisitor = queryset[random_index]
+        new_inquisitor.is_inquisitor = True
+        new_inquisitor.save()
 
 
 class IPBlocklistService:

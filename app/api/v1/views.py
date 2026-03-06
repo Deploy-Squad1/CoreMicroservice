@@ -1,7 +1,9 @@
 from datetime import datetime
 
+import requests
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from requests import RequestException
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -10,8 +12,14 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from app.services import IPBlocklistService, PasscodeService, UserService
+from app.services import (
+    DatabaseService,
+    IPBlocklistService,
+    PasscodeService,
+    UserService,
+)
 
+from .authentication import IsInGroup
 from .serializers import UserSerializer
 
 
@@ -114,7 +122,7 @@ class RefreshTokenView(APIView):
                 value=str(refresh_token),
                 httponly=True,
                 samesite="Lax",
-                expires=datetime.fromtimestamp(refresh_token.payload["exp"]),
+                expires=datetime.fromtimestamp(refresh_token.payload.get("exp")),
             )
 
         new_access_token = refresh_token.access_token
@@ -185,3 +193,22 @@ class VerifyPasscodeView(APIView):
             )
         except ObjectDoesNotExist as exc:
             return Response(exc.args, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class DropDatabaseDataView(APIView):
+    permission_classes = [IsInGroup]
+    required_groups = "Gold"
+
+    def delete(self, request):
+        response = Response(status=status.HTTP_200_OK)
+        DatabaseService.delete_all_data()
+
+        try:
+            requests.delete(
+                settings.MAP_SERVICE_BASE_URL + "/api/internal/database/delete",
+                timeout=600,
+            )
+        except RequestException:
+            response = Response(status=status.HTTP_206_PARTIAL_CONTENT)
+
+        return response

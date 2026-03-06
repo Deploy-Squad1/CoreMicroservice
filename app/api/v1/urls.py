@@ -3,6 +3,7 @@ from django.urls import path
 from .views import (
     AddIPToBlocklistView,
     CheckIPView,
+    DropDatabaseDataView,
     HealthCheckView,
     LoginView,
     LogoutView,
@@ -20,4 +21,5 @@ urlpatterns = [
     path("ip/block/", AddIPToBlocklistView.as_view(), name="block-ip"),
     path("ip/check/", CheckIPView.as_view(), name="check-ip"),
     path("passcode/verify/", VerifyPasscodeView.as_view(), name="check-passcode"),
+    path("database/delete/", DropDatabaseDataView.as_view(), name="drop-database"),
 ]

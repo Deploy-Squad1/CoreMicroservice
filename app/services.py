@@ -9,6 +9,7 @@ from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth.models import Group
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.management import call_command
 
 from app.models import IPBlocklist, Passcode
 
@@ -129,3 +130,14 @@ class PasscodeService:
 
         old_passcode.passcode = make_password(plain_passcode)
         old_passcode.save()
+
+
+# pylint: disable=R0903
+class DatabaseService:
+    @staticmethod
+    def delete_all_data() -> None:
+        # Revert migrations
+        call_command("migrate", "auth", "zero")
+
+        # Reapply migrations
+        call_command("migrate")

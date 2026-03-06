@@ -177,7 +177,7 @@ INITIAL_GROUPS = (
 BLOCKED_IP_REDIRECT_URL = "https://github.com/Deploy-Squad1"  # Change before deployment
 
 # URL of the Email microservice
-EMAIL_SERVICE_BASE_URL = "http://localhost:8081"
+EMAIL_SERVICE_BASE_URL = os.getenv("EMAIL_SERVICE_URL")
 
 # URL of the Map microservice
 MAP_SERVICE_BASE_URL = "http://localhost:8080"

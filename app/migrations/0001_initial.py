@@ -103,6 +103,12 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
+                    "is_inquisitor",
+                    models.BooleanField(
+                        default=False, verbose_name="inquisitor status"
+                    ),
+                ),
+                (
                     "groups",
                     models.ManyToManyField(
                         blank=True,

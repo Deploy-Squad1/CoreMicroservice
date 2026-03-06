@@ -12,6 +12,11 @@ class User(AbstractUser):
         },
     )
 
+    is_inquisitor = models.BooleanField(
+        _("inquisitor status"),
+        default=False,
+    )
+
 
 class IPBlocklist(models.Model):
     ip_address = models.CharField(

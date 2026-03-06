@@ -30,6 +30,8 @@ DB_HOST=""
 DB_PORT=""
 
 DJANGO_SECRET_KEY=""
+
+EMAIL_SERVICE_URL=""
 ```
 
 ### Load environment variables from .env file

@@ -1,0 +1,2 @@
+0 7 * * *  curl -X POST http://core-service:8000/api/internal/v1/passcode/rotate >> /proc/1/fd/1 2>&1
+#0 8 * * * curl -X POST http://core-service:8000/api/internal/v1/voting/initialize >> /proc/1/fd/1 2

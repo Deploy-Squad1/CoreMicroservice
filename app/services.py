@@ -158,7 +158,7 @@ class EmailService:
         payload = {
             "to_email": to_email,
             "passcode": passcode,
-            "vaild_until": valid_until,
+            "valid_until": valid_until,
         }
 
         response = requests.post(url, json=payload, timeout=5)

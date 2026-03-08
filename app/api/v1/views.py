@@ -71,6 +71,7 @@ class LoginView(APIView):
         # TODO: Move JWT token logic to the service
         refresh_token = RefreshToken.for_user(user)
         refresh_token["role"] = user.groups.first().name
+        refresh_token["is_inquisitor"] = user.is_inquisitor
         access_token = refresh_token.access_token
 
         serializer = UserSerializer(user)
@@ -117,6 +118,17 @@ class RefreshTokenView(APIView):
         if refresh_token.payload.get("role") != user.groups.first().name:
             refresh_token = RefreshToken.for_user(user)
             refresh_token["role"] = user.groups.first().name
+            response.set_cookie(
+                key="refresh_token",
+                value=str(refresh_token),
+                httponly=True,
+                samesite="Lax",
+                expires=datetime.fromtimestamp(refresh_token.payload.get("exp")),
+            )
+
+        if refresh_token.payload.get("is_inquisitor") != user.is_inquisitor:
+            refresh_token = RefreshToken.for_user(user)
+            refresh_token["is_inquisitor"] = user.is_inquisitor
             response.set_cookie(
                 key="refresh_token",
                 value=str(refresh_token),

@@ -1,11 +1,12 @@
 import requests
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from requests import HTTPError, RequestException
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from app.services import PasscodeService
+from app.services import PasscodeService, UserService
 
 
 class PasscodeRotateView(APIView):
@@ -31,4 +32,14 @@ class PasscodeRotateView(APIView):
             return Response(exc.args, status=response.status_code)
 
         PasscodeService.update(plain_passcode)
+        return Response(status=status.HTTP_200_OK)
+
+
+class AssignNewInquisitorView(APIView):
+    def post(self, request):
+        try:
+            UserService.assign_new_inquisitor()
+        except ObjectDoesNotExist as exc:
+            return Response(exc.args, status=status.HTTP_400_BAD_REQUEST)
+
         return Response(status=status.HTTP_200_OK)

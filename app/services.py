@@ -4,6 +4,7 @@ import random
 import secrets
 import string
 
+import requests
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password, make_password
@@ -160,3 +161,25 @@ class DatabaseService:
 
         # Reapply migrations
         call_command("migrate")
+
+
+class EmailService:
+    @staticmethod
+    def send_passcode_email(
+        to_email: str,
+        passcode: str,
+        valid_until: str | None = None,
+    ) -> None:
+        """Send generated passcode via EmailMicroservice."""
+
+        url = settings.EMAIL_SERVICE_BASE_URL + "/send-passcode"
+
+        payload = {
+            "to_email": to_email,
+            "passcode": passcode,
+            "valid_until": valid_until,
+        }
+
+        response = requests.post(url, json=payload, timeout=5)
+
+        response.raise_for_status()

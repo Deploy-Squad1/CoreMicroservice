@@ -32,7 +32,11 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "core-service",  # Docker internal hostname used by the scheduler container
+]
 
 
 # Application definition
@@ -177,7 +181,7 @@ INITIAL_GROUPS = (
 BLOCKED_IP_REDIRECT_URL = "https://github.com/Deploy-Squad1"  # Change before deployment
 
 # URL of the Email microservice
-EMAIL_SERVICE_BASE_URL = "http://localhost:8081"
+EMAIL_SERVICE_BASE_URL = os.getenv("EMAIL_SERVICE_URL")
 
 # URL of the Map microservice
 MAP_SERVICE_BASE_URL = "http://localhost:8080"

@@ -162,6 +162,16 @@ class HealthCheckView(APIView):
         return Response({"status": "ok"}, status=status.HTTP_200_OK)
 
 
+class UsersView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        users = UserService.get_all().values("id", "username")
+        serializer = UserSerializer(users, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class AddIPToBlocklistView(APIView):
     permission_classes = [IsAuthenticated]
 

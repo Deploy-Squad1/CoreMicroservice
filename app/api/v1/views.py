@@ -233,4 +233,12 @@ class DropDatabaseDataView(APIView):
         except RequestException:
             response = Response(status=status.HTTP_206_PARTIAL_CONTENT)
 
+        try:
+            requests.delete(
+                settings.VOTING_SERVICE_BASE_URL + "/api/internal/database/delete",
+                timeout=600,
+            )
+        except RequestException:
+            response = Response(status=status.HTTP_206_PARTIAL_CONTENT)
+
         return response

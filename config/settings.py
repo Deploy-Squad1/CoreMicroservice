@@ -185,3 +185,6 @@ EMAIL_SERVICE_BASE_URL = os.getenv("EMAIL_SERVICE_URL")
 
 # URL of the Map microservice
 MAP_SERVICE_BASE_URL = "http://localhost:8080"
+
+# URL of the Map microservice
+VOTING_SERVICE_BASE_URL = "http://localhost:8085"

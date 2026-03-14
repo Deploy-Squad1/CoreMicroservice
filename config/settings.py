@@ -149,7 +149,7 @@ SIMPLE_JWT = {
 # https://github.com/adamchainz/django-cors-headers?tab=readme-ov-file#django-cors-headers
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # For local development
+    os.getenv("FRONTEND_SERVICE_URL"),
 ]
 
 CORS_ALLOW_METHODS = (
@@ -161,7 +161,7 @@ CORS_ALLOW_METHODS = (
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:5173",  # For local development
+    os.getenv("FRONTEND_SERVICE_URL"),
 ]
 
 
@@ -184,7 +184,7 @@ BLOCKED_IP_REDIRECT_URL = "https://github.com/Deploy-Squad1"  # Change before de
 EMAIL_SERVICE_BASE_URL = os.getenv("EMAIL_SERVICE_URL")
 
 # URL of the Map microservice
-MAP_SERVICE_BASE_URL = "http://localhost:8080"
+MAP_SERVICE_BASE_URL = os.getenv("MAP_SERVICE_URL")
 
 # URL of the Map microservice
-VOTING_SERVICE_BASE_URL = "http://localhost:8085"
+VOTING_SERVICE_BASE_URL = os.getenv("VOTING_SERVICE_URL")

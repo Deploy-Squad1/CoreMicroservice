@@ -1,9 +1,10 @@
-asgiref==3.11.1
-Django==6.0.2
+# Only top-level dependencies
+Django==6.0.3
 django-cors-headers==4.9.0
 djangorestframework==3.16.1
 djangorestframework-simplejwt==5.5.1
+gunicorn==25.1.0
 psycopg==3.3.3
+psycopg-c==3.3.3    # optimization package for psycopg3
 python-dotenv==1.2.1
 requests==2.32.5
-sqlparse==0.5.5

@@ -44,8 +44,8 @@ set +a
 
 ### Apply migrations
 
-Run `flask db upgrade`
+Run `python manage.py migrate`
 
-### Run application
+### Run application (development server)
 
 Run `python manage.py runserver`

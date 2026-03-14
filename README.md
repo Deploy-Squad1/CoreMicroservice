@@ -31,7 +31,10 @@ DB_PORT=""
 
 DJANGO_SECRET_KEY=""
 
+FRONTEND_SERVICE_URL=""
 EMAIL_SERVICE_URL=""
+MAP_SERVICE_BASE_URL=""
+VOTING_SERVICE_URL=""
 ```
 
 ### Load environment variables from .env file

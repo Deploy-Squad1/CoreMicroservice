@@ -1,22 +1,18 @@
 from django.core.management.base import BaseCommand
 
-from app.services import EmailService, PasscodeService
+from app.services import PasscodeService
 
 
 class Command(BaseCommand):
-    help = "Rotate daily passcode and notify users"
+    help = "Rotate daily passcode"
 
-    def handle(self, *args, **kwargs):
+    def add_arguments(self, parser):
+        parser.add_argument("passcode", type=str)
+
+    def handle(self, *args, **options):
         self.stdout.write("Generating new passcode...")
 
-        plain_passcode = PasscodeService.generate_plain()
+        plain_passcode = options["passcode"]
         PasscodeService.update(plain_passcode)
-
-        self.stdout.write("Sending passcode email...")
-
-        EmailService.send_passcode_email(
-            to_email="user@example.com",
-            passcode=plain_passcode,
-        )
 
         self.stdout.write(self.style.SUCCESS("Passcode rotation completed"))

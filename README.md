@@ -31,7 +31,13 @@ DB_PORT=""
 
 DJANGO_SECRET_KEY=""
 
+DEBUG=""            # False by default
+ALLOWED_HOSTS=""    # Only serving on 127.0.0.1 by default
+
+FRONTEND_SERVICE_URL=""
 EMAIL_SERVICE_URL=""
+MAP_SERVICE_BASE_URL=""
+VOTING_SERVICE_URL=""
 ```
 
 ### Load environment variables from .env file
@@ -44,8 +50,8 @@ set +a
 
 ### Apply migrations
 
-Run `flask db upgrade`
+Run `python manage.py migrate`
 
-### Run application
+### Run application (development server)
 
 Run `python manage.py runserver`

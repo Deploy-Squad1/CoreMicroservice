@@ -227,7 +227,7 @@ class DropDatabaseDataView(APIView):
 
         try:
             requests.delete(
-                settings.MAP_SERVICE_BASE_URL + "/api/internal/database/delete",
+                settings.MAP_SERVICE_BASE_URL + "/map/api/internal/database/delete",
                 timeout=600,
             )
         except RequestException:
@@ -235,7 +235,8 @@ class DropDatabaseDataView(APIView):
 
         try:
             requests.delete(
-                settings.VOTING_SERVICE_BASE_URL + "/api/internal/database/delete",
+                settings.VOTING_SERVICE_BASE_URL
+                + "/voting/api/internal/database/delete",
                 timeout=600,
             )
         except RequestException:

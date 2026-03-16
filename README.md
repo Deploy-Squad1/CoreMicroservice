@@ -31,6 +31,9 @@ DB_PORT=""
 
 DJANGO_SECRET_KEY=""
 
+DEBUG=""            # False by default
+ALLOWED_HOSTS=""    # Only serving on 127.0.0.1 by default
+
 FRONTEND_SERVICE_URL=""
 EMAIL_SERVICE_URL=""
 MAP_SERVICE_BASE_URL=""

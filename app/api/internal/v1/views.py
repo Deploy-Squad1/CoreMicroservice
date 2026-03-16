@@ -15,7 +15,7 @@ class PasscodeRotateView(APIView):
 
         try:
             response = requests.post(
-                settings.EMAIL_SERVICE_BASE_URL + "/send-passcode",
+                settings.EMAIL_SERVICE_BASE_URL + "/email/internal/send-daily-password",
                 json={
                     "to_email": "user@example.com",
                     "passcode": plain_passcode,

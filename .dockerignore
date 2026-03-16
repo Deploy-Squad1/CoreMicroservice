@@ -60,3 +60,11 @@ docs/_build/
 # Node/npm or frontend
 node_modules/
 frontend/
+# Unrelated files/dirs
+.git/
+.github/
+.pre-commit-config.yaml
+scheduler/
+docker-compose.yml
+.pylintrc
+.isort.cfg

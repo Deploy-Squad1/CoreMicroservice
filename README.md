@@ -52,6 +52,10 @@ set +a
 
 Run `python manage.py migrate`
 
+### Create an initial passcode
+
+Run `python manage.py rotate_passcode <initial_passcode>`
+
 ### Run application (development server)
 
 Run `python manage.py runserver`
